@@ -1,7 +1,7 @@
 import requests
 import random
 from typing import Union, List, Literal
-from pyidoit.utils import DeleteStatusField
+from pyidoit.utils import CategoryField, DeleteStatusField, ObjectStatusField
 
 class IDoitClient(object):
     """_summary_
@@ -78,80 +78,210 @@ class IDoitClient(object):
         pass
 
     # cmdb objects methods
-    def cmdb_object_create(self):
-        """_summary_
+    def cmdb_object_create(
+        self,
+        type: Union[str, int],
+        title: int,
+        category: Union[CategoryField, None] = None,
+        purpose: Union[str, None] = None,
+        cmdb_status: Union[Union[str, int], None] = None,
+        description: Union[str, None] = None
+    ):
+        """Create new object with some optional information
 
         Args:
-            object (_type_): _description_"""
-        pass
-
-    def cmdb_object_read(self, object_id: int):
-        """Get a specific object from i-doit with its id.
-
-        Args:
-            object_id (int): The id of the object."""
+            type (str | int): The object type constant as string or integer.
+            title (str): The object title.
+            category (CategoryField): The Category of the object.
+            purpose (str): The purpose of the obejct.
+            cmdb_status (str | int)	The cmdb status of the object as integer or string.
+            description (str): The description of the object.
+        """
         body = {
             "jsonrpc": "2.0",
             "method" :"cmdb.object.read",
             "params": {
                 "apikey": self.apikey,
+                "language": self.language,
+                "type": type,
+                "title": title
+            },
+            "id": random.randint(1, 200)
+        }
+        
+        if category:
+            body["params"]["category"] = category
+        if purpose:
+            body["params"]["purpose"] = purpose
+        if cmdb_status:
+            body["params"]["cmdb_status"] = cmdb_status
+        if description:
+            body["params"]["description"] = description
+
+        data = self._execute_request(body)
+        return data
+
+    def cmdb_object_read(self, object_id: int):
+        """Get a specific object.
+
+        Args:
+            object_id (int): The object identifier."""
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"cmdb.object.read",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language,
                 "id": object_id
             },
-            "id": 1
+            "id": random.randint(1, 200)
         }
 
         data = self._execute_request(body)
-        # print(data)
         return data
 
-    def cmdb_object_update(self):
-        """_summary_
+    def cmdb_object_update(self, object_id: int, title: str):
+        """Update the title of a given object.
 
         Args:
-            object (_type_): _description_"""
-        pass
+            object_id (int): The object identifier.
+            title (str): The new object title
+        """
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"cmdb.object.update",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language,
+                "id": object_id,
+                "title": title
+            },
+            "id": random.randint(1, 200)
+        }
 
-    def cmdb_object_delete(self):
-        """_summary_
+        data = self._execute_request(body)
+        return data
 
-        Args:
-            object (_type_): _description_"""
-        pass
-
-    def cmdb_object_recycle(self):
-        """_summary_
-
-        Args:
-            object (_type_): _description_"""
-        pass
-
-    def cmdb_object_archive(self):
-        """_summary_
-
-        Args:
-            object (_type_): _description_"""
-        pass
-
-    def cmdb_object_purge(self):
-        """_summary_
+    def cmdb_object_delete(
+        self,
+        object_id: int,
+        status: DeleteStatusField
+    ):
+        """Delete a specific object or change it's status.
 
         Args:
-            object (_type_): _description_"""
-        pass
+            object_id (int): The object identifier.
+            status (DeleteStatusField): The status that indicate the action to take.
+        """
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"cmdb.object.delete",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language,
+                "id": object_id,
+                "status": status
+            },
+            "id": random.randint(1, 200)
+        }
 
-    def cmdb_object_mark_as_template(self):
-        """_summary_
+        data = self._execute_request(body)
+        return data
+
+    def cmdb_object_recycle(self, object_id: int):
+        """Recycle a speficic object.
 
         Args:
-            object (_type_): _description_"""
-        pass
+            object_id (int): The id of the object."""
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"cmdb.object.recycle",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language,
+                "id": object_id
+            },
+            "id": random.randint(1, 200)
+        }
 
-    def cmdb_object_mark_as_mass_change_template(self):
-        """_summary_
+        data = self._execute_request(body)
+        return data
+
+    def cmdb_object_archive(self, object_id: int):
+        """Archibe a specific object.
 
         Args:
-            object (_type_): _description_"""
-        pass
+            object_id (int): The object identifier."""
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"cmdb.object.Integer",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language,
+                "id": object_id
+            },
+            "id": random.randint(1, 200)
+        }
+
+        data = self._execute_request(body)
+        return data
+
+    def cmdb_object_purge(self, object_id: int):
+        """Purge a specific object from the database.
+
+        Args:
+            object_id (int): The object identifier."""
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"cmdb.object.purge",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language,
+                "id": object_id
+            },
+            "id": random.randint(1, 200)
+        }
+
+        data = self._execute_request(body)
+        return data
+
+    def cmdb_object_mark_as_template(self, object_id: int):
+        """Set the Object condition as a Template.
+
+        Args:
+            object_id (int): The object identifier."""
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"cmdb.object.markAsTemplate",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language,
+                "id": object_id
+            },
+            "id": random.randint(1, 200)
+        }
+
+        data = self._execute_request(body)
+        return data
+
+    def cmdb_object_mark_as_mass_change_template(self, object_id: int):
+        """Set the Object condition as a Mass Change Template.
+
+        Args:
+            object_id (int): The object identifier."""
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"cmdb.object.markAsMassChangeTemplate",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language,
+                "id": object_id
+            },
+            "id": random.randint(1, 200)
+        }
+
+        data = self._execute_request(body)
+        return data
 
     def cmdb_objects_read(
         self,
@@ -168,7 +298,7 @@ class IDoitClient(object):
         last_name: Union[str, None] = None,
         email: Union[str, None] = None,
         type_group: Union[str, None] = None,
-        status: Union[DeleteStatusField, None] = None
+        status: Union[ObjectStatusField, None] = None
     ):
         """Get the list of all available objects.
 
@@ -188,7 +318,7 @@ class IDoitClient(object):
             last_name (str): Last name of an object of type Persons.
             email (str): e-mail address of an object of type Persons, Person groups or Organization.
             type_group (str): Filters by the object type group e.g. Infrastructure or Other.
-            status (DeleteStatusField): Filter by status of the objects e.g. Normal or Archived.
+            status (ObjectStatusField): Filter by status of the objects e.g. Normal or Archived.
         """
         body = {
             "jsonrpc": "2.0",
