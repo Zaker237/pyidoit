@@ -221,10 +221,16 @@ class CategoryField(enum.Enum):
     OperatingSystems = "C__CATS__OPERATING_SYSTEM"
 
 
-class DeleteStatusField(enum.Enum):
+class ObjectStatusField(enum.Enum):
     C__RECORD_STATUS__BIRTH = 1
     C__RECORD_STATUS__NORMAL = 2
     C__RECORD_STATUS__ARCHIVED = 3
     C__RECORD_STATUS__DELETED = 4
     C__RECORD_STATUS__TEMPLATE = 6
     C__RECORD_STATUS__MASS_CHANGES_TEMPLATE = 7
+
+
+class DeleteStatusField(enum.Enum):
+    ArchiveObject = "C__RECORD_STATUS__ARCHIVED"
+    MarkObjectAsDeleted = "C__RECORD_STATUS__DELETED"
+    PurgeObjectFromDatabase = "C__RECORD_STATUS__PURGE"
