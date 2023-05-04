@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+export PREFIX=""
+if [ -d 'venv' ] ; then
+    export PREFIX="venv/bin/"
+fi
+
+set -x
+
+${PREFIX}autoflake --in-place --recursive pyidoit tests
+${PREFIX}isort --project=pyidoit pyidoit tests
+${PREFIX}black pyidoit tests
+${PREFIX}mypy pyidoit
