@@ -1,0 +1,21 @@
+site_name: Pyidoit
+site_description: Simple Python i-doit client.
+
+theme:
+  name: 'material'
+
+repo_name: Zaker237/pyidoit
+repo_url: https://github.com/Zaker237/pyidoit
+
+nav:
+    - Introduction: 'index.md'
+    - Idoit Methods: 'idoit_methods.md'
+    - Objects Methods: 'objects_methods.md'
+    - Categories Methods: 'categories_queries.md'
+    - Contributing: 'contributing.md'
+
+markdown_extensions:
+  - mkautodoc
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
