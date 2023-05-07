@@ -4,7 +4,7 @@ from typing import Union, List, Literal
 from pyidoit.utils import CategoryField, DeleteStatusField, ObjectStatusField
 
 class IDoitClient(object):
-    """_summary_
+    """Simple i-doit python client.
 
     Args:
         object (_type_): _description_
@@ -27,13 +27,14 @@ class IDoitClient(object):
             "Accept": "application/json"
         }
     
-    def _execute_request(self, body):
-        print(body)
+    def _execute_request(self, body, headers=None):
+        if not headers: # if header is not provided use the default one
+            headers = self.headers
         try:
             data = requests.post(
                 self.url,
                 json=body,
-                headers=self.headers,
+                headers=headers,
                 auth=(self.username, self.password)
             )
         except:
@@ -42,40 +43,94 @@ class IDoitClient(object):
         return data.json()
         
     # idoit methods
-    def idoit_search(self):
-        """_summary_
+    def idoit_search(self, q):
+        """Search objects in i-doit.
 
         Args:
-            object (_type_): _description_"""
-        pass
+            q (str): The query for the search."""
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"idoit.search",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language,
+                "q": q
+            },
+            "id": random.randint(1, 200)
+        }
+        
+        data = self._execute_request(body)
+        return data
 
     def idoit_version(self):
-        """_summary_
-
-        Args:
-            object (_type_): _description_"""
-        pass
+        """Fetch information about i-doit and the current user."""
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"idoit.version",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language
+            },
+            "id": random.randint(1, 200)
+        }
+        data = self._execute_request(body)
+        return data
 
     def idoit_constants(self):
-        """_summary_
+        """Fetch all defined constants from i-doit."""
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"idoit.constants",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language
+            },
+            "id": random.randint(1, 200)
+        }
+        data = self._execute_request(body)
+        return data
+
+    def idoit_login(self, username: str, password: str):
+        """Create new session
 
         Args:
-            object (_type_): _description_"""
-        pass
+            username (str): the username.
+            password (str): The password.
+        """
+        new_header = {**self.headers}
+        new_header["X-RPC-Auth-Username"] = username
+        new_header["X-RPC-Auth-Password"] = password
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"idoit.login",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language
+            },
+            "id": random.randint(1, 200)
+        }
+        data = self._execute_request(body, headers=new_header)
+        return data
 
-    def idoit_login(self):
-        """_summary_
+    def idoit_logout(self, token: str):
+        """Close current session
 
         Args:
-            object (_type_): _description_"""
-        pass
-
-    def idoit_logout(self):
-        """_summary_
-
-        Args:
-            object (_type_): _description_"""
-        pass
+            token (str): The session's token.
+        """
+        new_header = {**self.headers}
+        new_header["X-RPC-Auth-Session"] = token
+        body = {
+            "jsonrpc": "2.0",
+            "method" :"cmdb.object.read",
+            "params": {
+                "apikey": self.apikey,
+                "language": self.language
+            },
+            "id": random.randint(1, 200)
+        }
+        data = self._execute_request(body, headers=new_header)
+        return data
 
     # cmdb objects methods
     def cmdb_object_create(
