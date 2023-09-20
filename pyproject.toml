@@ -1,14 +1,13 @@
 [build-system]
 requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
-exclude = ["tests", "tests*"]
 
 [project]
 name = "pyidoit"
 dynamic = ["version"]
 description = "An Simple python i-doit Client."
 readme = "README.md"
-license = "MIT"
+license = {file = "LICENSE.md"}
 requires-python = ">=3.7"
 authors = [
     { name = "Alex Mboutchouang", email = "mboutchouang@gmail.com" },
@@ -25,9 +24,6 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Topic :: Internet :: WWW/HTTP",
-]
-dependencies = [
-    requests
 ]
 
 [project.optional-dependencies]
